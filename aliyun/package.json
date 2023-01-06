@@ -1,0 +1,29 @@
+{
+  "name": "aliyun",
+  "version": "0.1.0",
+  "bin": {
+    "aliyun": "bin/aliyun.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@alicloud/ros-cdk-assert": "^1.0.13",
+    "@babel/core": "^7.12.9",
+    "@babel/preset-env": "7.12.7",
+    "@babel/preset-typescript": "^7.12.7",
+    "@types/jest": "^25.2.1",
+    "@types/node": "10.17.5",
+    "babel-jest": "^26.6.3",
+    "jest": "^25.5.0",
+    "ts-jest": "^25.3.1",
+    "ts-node": "^8.1.0",
+    "typescript": "^3.9.7"
+  },
+  "dependencies": {
+    "@alicloud/ros-cdk-core": "^1.0.13",
+    "@alicloud/ros-cdk-ecs": "^1.0.11",
+    "@alicloud/ros-cdk-ros": "^1.0.11"
+  }
+}

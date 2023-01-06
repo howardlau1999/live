@@ -1,12 +1,12 @@
-#define SESSIONS 4
-#define W 1280
-#define H 720
-#define WSTR "1280"
-#define HSTR "720"
-#define HW 640
-#define HH 360
-#define HWSTR "640"
-#define HHSTR "360"
+#define SESSIONS 1
+#define W 1920
+#define H 1080
+#define WSTR "1920"
+#define HSTR "1080"
+#define HW 1920
+#define HH 1080
+#define HWSTR "1920"
+#define HHSTR "1080"
 
 const int bitrate = 6000 * 1024;
 
@@ -116,40 +116,7 @@ void compositor() {
   std::string filter_desc =
       std::string() +
       "[in0]setpts=PTS-STARTPTS,pad=" WSTR ":" HSTR
-      " [c];[c][in1]overlay=x=" HWSTR
-      ":y=0[out1]"
-      ";[out1][in2]overlay=x=0:y=" HHSTR "[out2];[out2][in3]overlay=x=" HWSTR
-      ":y=" HHSTR
-      ",drawtext=fontfile='"
-      "FZMWFont.ttf':text='「迪奥娜等八重杯」躲猫猫大赛！':x=(" HWSTR
-      "-text_w/"
-      "2):y=(0):fontsize=32:fontcolor=white:box=1:boxcolor=black@0.5:"
-      "boxborderw=5,drawtext=fontfile='"
-      "FZMWFont.ttf':text='" +
-      texts[0] +
-      "':x=(" HWSTR
-      "-text_w/"
-      "2):y=(text_h+13):fontsize=32:fontcolor=white:box=1:boxcolor=black@0.5:"
-      "boxborderw=5,drawtext=fontfile='FZMWFont.ttf':text='" +
-      texts[1] +
-      "':x=(" HWSTR
-      "-"
-      "text_w-5):y=(" HHSTR
-      "-text_h-5):fontsize=32:fontcolor=white:box=1:boxcolor=black@"
-      "0.5:boxborderw=5,drawtext=fontfile='FZMWFont.ttf':text='" +
-      texts[2] +
-      "':x=(" HWSTR "+5):y=(" HHSTR
-      "-text_h-5):fontsize=32:fontcolor=white:box=1:boxcolor=black@0."
-      "5:boxborderw=5,drawtext=fontfile='FZMWFont.ttf':text='" +
-      texts[3] +
-      "':x=(" HWSTR "-text_w-5):y=(" HHSTR
-      "+5):fontsize=32:fontcolor=white:box=1:"
-      "boxcolor="
-      "black@0.5:boxborderw=5,drawtext=fontfile='FZMWFont.ttf':text='" +
-      texts[4] +
-      "':x=(" HWSTR "+5):y=(" HHSTR
-      "+5):fontsize=32:fontcolor=white:box=1:boxcolor=black@"
-      "0.5:boxborderw=5[out]";
+      " [out]";
   ret = avfilter_graph_parse_ptr(filter_graph, filter_desc.c_str(),
                                  &output_inout, input_inouts, nullptr);
   if (ret < 0) {
@@ -258,7 +225,7 @@ void blank_screen_generator() {
       int got = 0;
       ret = avcodec_send_packet(decode_ctx, packet);
       if (ret < 0) {
-        printf("codec send packet error %d %d\n", ret);
+        printf("codec send packet error %d\n", ret);
         return;
       }
       av_packet_unref(packet);
@@ -665,7 +632,7 @@ void output_io_thread() {
         av_interleaved_write_frame(fileCtx, av_packet_clone(packet));
         ret = av_interleaved_write_frame(ctx, packet);
         if (oframes % 600 == 0) {
-          printf("sent %d frames\n", oframes);
+          printf("sent %ld frames\n", oframes);
         }
         av_packet_unref(packet);
       }
@@ -674,7 +641,7 @@ void output_io_thread() {
       // printf("audio\n");
       ret = avcodec_send_frame(audio_ctx, output_frame);
       if (ret) {
-        printf("encode send %d err %d\n", oframes, ret);
+        printf("encode send %ld err %d\n", oframes, ret);
         av_frame_free(&output_frame);
         continue;
       }
@@ -715,7 +682,7 @@ int main(int argc, char* argv[]) {
   for (int i = 3; i < argc; ++i) {
     texts[i - 3] = argv[i];
   }
-  av_log_set_level(AV_LOG_ERROR);
+  av_log_set_level(AV_LOG_INFO);
   avdevice_register_all();
   avformat_network_init();
   std::vector<std::thread> input_threads;
